@@ -4,6 +4,7 @@ import GitHub from "next-auth/providers/github"
 import { client } from "@/sanity/lib/client"
 import { AUTHOR_BY_GITHUB_ID_QUERY } from "@/sanity/lib/queries"
 import { writeClient } from "@/sanity/lib/write-client"
+import { projectId, dataset } from "@/sanity/env"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [GitHub],
@@ -12,34 +13,53 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       user: { name, email, image },
       profile: { id, login, bio },
     }) {
-      const existingUser = await client
-        .withConfig({ useCdn: false })
-        .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
-          id,
-        })
-
-      if (!existingUser) {
-        await writeClient.create({
-          _type: "author",
-          id,
-          name,
-          username: login,
-          email,
-          image,
-          bio: bio || "",
-        })
+      // Skip database operations if Sanity is not configured
+      if (!projectId || projectId === "dummy" || !dataset) {
+        return true
       }
+
+      try {
+        const existingUser = await client
+          .withConfig({ useCdn: false })
+          .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
+            id,
+          })
+
+        if (!existingUser) {
+          await writeClient.create({
+            _type: "author",
+            id,
+            name,
+            username: login,
+            email,
+            image,
+            bio: bio || "",
+          })
+        }
+      } catch (error) {
+        console.warn("Sanity operations skipped:", error)
+      }
+      
       return true
     },
     async jwt({ token, account, profile }) {
-      if (account && profile) {
-        const user = await client
-          .withConfig({ useCdn: false })
-          .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
-            id: profile?.id,
-          })
+      // Skip database operations if Sanity is not configured
+      if (!projectId || projectId === "dummy" || !dataset) {
+        return token
+      }
 
-        token.id = user?._id
+      try {
+        if (account && profile) {
+          const user = await client
+            .withConfig({ useCdn: false })
+            .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
+              id: profile?.id,
+            })
+
+          token.id = user?._id
+        }
+      } catch (error) {
+        console.warn("Sanity operations skipped:", error)
       }
 
       return token
