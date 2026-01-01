@@ -1,6 +1,6 @@
 <div align="center">
   <!-- <br /> -->
-    <!-- <a href="https://aayushbharti.vercel.app" target="_blank">
+    <!-- <a href="https://next-ventures.vercel.app" target="_blank">
       <img src="https://github.com/user-attachments/assets/471e2baa-8781-43b8-aaed-62e313d03e99" alt="Project Banner">
     </a> -->
   <!-- <br /> -->
@@ -101,8 +101,8 @@ Make sure you have the following installed on your machine:
 **Cloning the Repository**
 
 ```bash
-git clone https://github.com/AayushBharti/Next-ventures.git
-cd pitchify
+git clone https://github.com/theshubhamgundu/next_ventures.git
+cd next_ventures
 ```
 
 <!-- **Installation**
