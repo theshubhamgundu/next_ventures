@@ -12,6 +12,7 @@ export const writeClient = createClient({
   token,
 })
 
-if (!writeClient.config().token) {
+// Only throw error if we're not in a dummy environment
+if (!writeClient.config().token && projectId !== "dummy") {
   throw new Error("Write token not found.")
 }
