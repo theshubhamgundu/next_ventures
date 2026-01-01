@@ -2,7 +2,7 @@
 import { motion, useAnimate } from "framer-motion"
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, Suspense } from "react"
 
 import Pointer from "@/components/pointer"
 import cursorYouImage from "@/public/images/cursor-you.svg"
@@ -11,7 +11,7 @@ import designExample2Image from "@/public/images/design-example-2.png"
 
 import SearchForm from "../search-form"
 
-export default function Hero() {
+function HeroContent() {
   const searchParams = useSearchParams()
   const query = searchParams.get("query") || ""
 
@@ -126,5 +126,13 @@ export default function Hero() {
         <SearchForm query={query} />
       </div>
     </section>
+  )
+}
+
+export default function Hero() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HeroContent />
+    </Suspense>
   )
 }
