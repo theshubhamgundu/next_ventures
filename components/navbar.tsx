@@ -165,22 +165,21 @@ const UserMenu = ({ session }: { session: any }) => (
   </>
 )
 
-const LoginButton = () => (
-  <form
-    action={async () => {
-      "use server"
-      await signIn("github")
-    }}
-  >
+const LoginButton = () => {
+  const handleClick = () => {
+    alert("Backend is currently disconnected. Login functionality is temporarily unavailable.")
+  }
+
+  return (
     <Button
-      type="submit"
+      onClick={handleClick}
       variant="secondary"
       size="sm"
       className="h-9 rounded-full bg-pink-400 px-4 text-base text-black hover:bg-pink-500"
     >
       Login
     </Button>
-  </form>
-)
+  )
+}
 
 export default Navbar
