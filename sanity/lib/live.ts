@@ -4,4 +4,8 @@ import { defineLive } from "next-sanity"
 
 import { client } from "@/sanity/lib/client"
 
-export const { sanityFetch, SanityLive } = defineLive({ client })
+// Only define live components if client exists
+export const { sanityFetch, SanityLive } = client ? defineLive({ client }) : {
+  sanityFetch: () => Promise.resolve(null),
+  SanityLive: () => null,
+}

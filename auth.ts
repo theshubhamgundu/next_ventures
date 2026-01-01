@@ -13,8 +13,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       user: { name, email, image },
       profile: { id, login, bio },
     }) {
-      // Skip database operations if Sanity is not configured
-      if (!projectId || projectId === "dummy" || !dataset) {
+      // Skip database operations if Sanity is not configured or client is null
+      if (!projectId || projectId === "dummy" || !dataset || !client) {
         return true
       }
 
@@ -43,8 +43,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true
     },
     async jwt({ token, account, profile }) {
-      // Skip database operations if Sanity is not configured
-      if (!projectId || projectId === "dummy" || !dataset) {
+      // Skip database operations if Sanity is not configured or client is null
+      if (!projectId || projectId === "dummy" || !dataset || !client) {
         return token
       }
 
