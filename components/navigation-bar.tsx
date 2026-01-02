@@ -1,4 +1,5 @@
-import { HelpCircle, Home, LogOut, Plus, Puzzle, Zap } from "lucide-react"
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 
@@ -9,161 +10,73 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import logoImage from "@/public/images/logo.svg"
-
-const navLinks = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Features", href: "/#features", icon: Zap },
-  { label: "Integrations", href: "/#integrations", icon: Puzzle },
-  { label: "FAQs", href: "/#faqs", icon: HelpCircle },
-]
 
 const Navbar = async () => {
-  const session = await auth()
+  let session = null;
+  
+  try {
+    session = await auth();
+  } catch (error) {
+    console.warn("Failed to get auth session:", error);
+    // Continue without session
+  }
 
   return (
     <header className="fixed top-0 z-[100] w-full py-4 lg:py-6">
-      <div className="container max-w-6xl">
-        <nav className="rounded-full border border-white/10 bg-black/60 backdrop-blur-md">
-          <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center">
-              <Link href="/" className="mr-6">
-                <Image
-                  src={logoImage}
-                  alt="Next ventures logo"
-                  width={120}
-                  height={40}
-                  className="h-6 w-auto"
-                />
-              </Link>
-              <ul className="hidden gap-6 lg:flex">
-                {navLinks.map(link => (
-                  <li key={link.label}>
-                    <NavLink href={link.href}>{link.label}</NavLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <nav className="container flex items-center justify-between">
+        <Link href="/">
+          <Image
+            src="https://cdn.sanity.io/images/3do82whm/production/1a3c8c8e5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c"
+            alt="Next Ventures Logo"
+            width={48}
+            height={48}
+            className="rounded-full"
+          />
+        </Link>
 
-            <div className="flex items-center gap-4">
-              {session && session.user ? (
-                <UserMenu session={session} />
-              ) : (
-                <LoginButton />
-              )}
-            </div>
-          </div>
-        </nav>
-      </div>
+        <div className="flex items-center gap-4">
+          {session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={session.user?.image || ""} alt={session.user?.name || ""} />
+                    <AvatarFallback>
+                      {session.user?.name?.charAt(0) || session.user?.email?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-1 leading-none">
+                    <p className="font-medium">{session.user?.name || session.user?.email}</p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href={`/user/${session.id}`}>Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/startup/create">Create Pitch</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-600" onClick={() => signOut()}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <LoginButton />
+          )}
+        </div>
+      </nav>
     </header>
   )
 }
-
-const NavLink = ({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) => (
-  <Link
-    href={href}
-    className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-  >
-    {children}
-  </Link>
-)
-
-const UserMenu = ({ session }: { session: any }) => (
-  <>
-    <Link href="/startup/create" className="hidden md:block">
-      <Button
-        variant="secondary"
-        size="sm"
-        className="h-9 rounded-full bg-pink-400 px-4 text-base text-black hover:bg-pink-500"
-      >
-        <Plus className="mr-1 size-4" />
-        Create
-      </Button>
-    </Link>
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="size-9 rounded-full p-0"
-          aria-label="User menu"
-        >
-          <Avatar className="size-9">
-            <AvatarImage
-              src={session.user.image || ""}
-              alt={session.user.name || ""}
-            />
-            <AvatarFallback>
-              {session.user.name?.charAt(0) || "U"}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent className="z-[100] w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <Link
-            href={`/user/${session.id}`}
-            className="flex flex-col space-y-1"
-          >
-            <p className="text-sm font-medium leading-none">
-              {session.user.name}
-            </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {session.user.email}
-            </p>
-          </Link>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem asChild>
-          <Link href="/startup/create">
-            <Plus className="mr-2 size-4" />
-            <span>Create Pitch</span>
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        {navLinks.map(link => (
-          <DropdownMenuItem key={link.label} asChild>
-            <Link href={link.href}>
-              <link.icon className="mr-2 size-4" />
-              <span>{link.label}</span>
-            </Link>
-          </DropdownMenuItem>
-        ))}
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem asChild>
-          <form
-            action={async () => {
-              "use server"
-              await signOut({ redirectTo: "/" })
-            }}
-          >
-            <button
-              type="submit"
-              className="flex w-full items-center text-left"
-            >
-              <LogOut className="mr-2 size-4" />
-              <span>Logout</span>
-            </button>
-          </form>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  </>
-)
 
 const LoginButton = () => {
   const handleClick = () => {
