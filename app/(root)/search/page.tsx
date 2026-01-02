@@ -6,6 +6,9 @@ import StartupCard, { StartupTypeCard } from "@/components/startup-card"
 import { sanityFetch, SanityLive } from "@/sanity/lib/live"
 import { STARTUPS_QUERY } from "@/sanity/lib/queries"
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default async function SearchPage({
   searchParams,
 }: {

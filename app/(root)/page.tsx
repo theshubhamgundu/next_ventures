@@ -8,6 +8,9 @@ import Introduction from "@/components/homepage/introduction"
 import LogoTicker from "@/components/homepage/logo-ticker"
 import RecentPitches from "@/components/homepage/recent-pitches-carousel"
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   return (
     <>
