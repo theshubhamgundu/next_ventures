@@ -38,13 +38,9 @@ const Navbar = () => {
       <header className="fixed top-0 z-[100] w-full py-4 lg:py-6">
         <nav className="container flex items-center justify-between">
           <Link href="/">
-            <Image
-              src="https://cdn.sanity.io/images/3do82whm/production/1a3c8c8e5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c"
-              alt="Next Ventures Logo"
-              width={48}
-              height={48}
-              className="rounded-full"
-            />
+            <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
+              <span className="text-white font-bold text-xl">NV</span>
+            </div>
           </Link>
           <div className="h-10 w-20 animate-pulse rounded-full bg-gray-600"></div>
         </nav>
@@ -56,13 +52,9 @@ const Navbar = () => {
     <header className="fixed top-0 z-[100] w-full py-4 lg:py-6">
       <nav className="container flex items-center justify-between">
         <Link href="/">
-          <Image
-            src="https://cdn.sanity.io/images/3do82whm/production/1a3c8c8e5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c"
-            alt="Next Ventures Logo"
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
+          <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center hover:scale-105 transition-transform">
+            <span className="text-white font-bold text-xl">NV</span>
+          </div>
         </Link>
 
         <div className="flex items-center gap-4">
