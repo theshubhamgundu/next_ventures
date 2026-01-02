@@ -8,6 +8,15 @@ import StartupCard, { StartupTypeCard } from "../startup-card"
 import Tag from "../tag"
 
 export default async function RecentPitchesCarousel() {
+  // Handle case when Sanity is not configured
+  if (!client) {
+    return (
+      <div className="mx-auto mt-10 flex w-full max-w-[1600px] flex-col items-center px-4 py-8">
+        <p className="text-center text-gray-600">No recent pitches available at the moment.</p>
+      </div>
+    )
+  }
+
   const startups = await client.fetch(RECENT_STARTUPS_QUERY)
 
   return (

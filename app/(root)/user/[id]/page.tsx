@@ -16,6 +16,17 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params
   const session = await auth()
 
+  // Handle case when Sanity is not configured
+  if (!client) {
+    return (
+      <div className="container mx-auto mt-24 px-4 py-8">
+        <div className="text-center text-gray-600">
+          <p>User profile not available at the moment.</p>
+        </div>
+      </div>
+    )
+  }
+
   const user = await client.fetch(AUTHOR_BY_ID_QUERY, { id })
   if (!user) return notFound()
 

@@ -25,6 +25,17 @@ export const experimental_ppr = true
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params
 
+  // Handle case when Sanity is not configured
+  if (!client) {
+    return (
+      <div className="min-h-screen">
+        <section className="mt-24 flex min-h-[230px] w-full flex-col items-center justify-center px-6 py-10">
+          <h1 className="text-2xl font-bold text-gray-600">Startup details not available at the moment.</h1>
+        </section>
+      </div>
+    )
+  }
+
   //parallel request fetching
   const [post, { select: editorPosts }] = await Promise.all([
     client.fetch(STARTUP_BY_ID_QUERY, { id }),

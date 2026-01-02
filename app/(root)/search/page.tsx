@@ -17,7 +17,9 @@ export default async function SearchPage({
   const session = await auth()
   console.log(session?.id)
 
-  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params })
+  // Handle case when Sanity is not configured
+  const result = await sanityFetch({ query: STARTUPS_QUERY, params })
+  const posts = result?.data || []
 
   return (
     <>
@@ -56,7 +58,7 @@ export default async function SearchPage({
           )}
         </div>
       </section>
-      <SanityLive />
+      {result && <SanityLive />}
     </>
   )
 }
