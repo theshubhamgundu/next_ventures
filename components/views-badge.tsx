@@ -6,6 +6,17 @@ import { STARTUP_VIEWS_QUERY } from "@/sanity/lib/queries"
 import { writeClient } from "@/sanity/lib/write-client"
 
 const View = async ({ id }: { id: string }) => {
+  // Handle case when Sanity is not configured
+  if (!client || !writeClient) {
+    return (
+      <div className="fixed bottom-3 right-3 mt-5 flex items-center justify-end rounded-lg bg-violet-700/10">
+        <p className="rounded-lg px-4 py-2 text-[16px] font-medium capitalize">
+          <span className="font-black">Views: N/A</span>
+        </p>
+      </div>
+    )
+  }
+
   const { views: totalViews } = await client
     .withConfig({ useCdn: false })
     .fetch(STARTUP_VIEWS_QUERY, { id })
