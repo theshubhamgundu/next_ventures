@@ -2,8 +2,8 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
-import { auth, signIn, signOut } from "@/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,14 +14,42 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const Navbar = async () => {
-  let session = null;
-  
-  try {
-    session = await auth();
-  } catch (error) {
-    console.warn("Failed to get auth session:", error);
-    // Continue without session
+const Navbar = () => {
+  const [session, setSession] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Check if we have a session stored or get it from auth
+    const checkSession = async () => {
+      try {
+        // For now, we'll just show the login button since backend is disconnected
+        setIsLoading(false)
+      } catch (error) {
+        console.warn("Failed to check session:", error)
+        setIsLoading(false)
+      }
+    }
+
+    checkSession()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <header className="fixed top-0 z-[100] w-full py-4 lg:py-6">
+        <nav className="container flex items-center justify-between">
+          <Link href="/">
+            <Image
+              src="https://cdn.sanity.io/images/3do82whm/production/1a3c8c8e5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c"
+              alt="Next Ventures Logo"
+              width={48}
+              height={48}
+              className="rounded-full"
+            />
+          </Link>
+          <div className="h-10 w-20 animate-pulse rounded-full bg-gray-600"></div>
+        </nav>
+      </header>
+    )
   }
 
   return (
@@ -64,7 +92,7 @@ const Navbar = async () => {
                   <Link href="/startup/create">Create Pitch</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600" onClick={() => signOut()}>
+                <DropdownMenuItem className="text-red-600">
                   Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
