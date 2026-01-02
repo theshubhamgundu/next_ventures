@@ -19,6 +19,14 @@ export const createPitch = async (
       status: "ERROR",
     })
 
+  // Handle case when Sanity is not configured
+  if (!writeClient) {
+    return parseServerActionResponse({
+      error: "Backend is currently disconnected. Pitch creation is temporarily unavailable.",
+      status: "ERROR",
+    })
+  }
+
   const { title, description, category, link } = Object.fromEntries(
     [...form].filter(([key]) => key !== "pitch"),
   )
